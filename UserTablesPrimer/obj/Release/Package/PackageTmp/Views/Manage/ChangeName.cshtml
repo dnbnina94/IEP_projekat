@@ -1,0 +1,46 @@
+﻿@model UserTablesPrimer.Models.ChangeNameViewModel
+@using UserTablesPrimer.Models
+@{
+    ViewBag.Title = "Edit Name";
+}
+
+<center>
+<h2>@ViewBag.Title.</h2>
+</center>
+
+@using (Html.BeginForm("ChangeName", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <hr />
+    <center>
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+    </center>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-4">
+            @Html.LabelFor(m => m.NewName,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.NewName)))
+            <div>
+                @Html.TextBoxFor(m => m.NewName, new { @class = "form-control", @Value = User.GetName() })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-4">
+            @Html.LabelFor(m => m.NewSurname,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.NewSurname)))
+            <div>
+                @Html.TextBoxFor(m => m.NewSurname, new { @class = "form-control", @Value = User.GetSurname() })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-4">
+            <input type="submit" value="Edit your name" class="btn formButton" />
+        </div>
+    </div>
+
+    <div class="col-md-12"><hr/></div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

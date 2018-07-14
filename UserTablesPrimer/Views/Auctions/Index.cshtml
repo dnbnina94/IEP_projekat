@@ -1,0 +1,219 @@
+﻿@model PagedList.IPagedList<UserTablesPrimer.Models.Auction>
+@using Microsoft.AspNet.Identity;
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+
+@Scripts.Render("~/Scripts/signalRTest.js")
+
+@*@<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+*@
+
+@if (ViewBag.error != null)
+{
+    string color = !ViewBag.error ? "green" : "red";
+    <center>
+        <span style="color: @color"><b>@ViewBag.message</b></span>
+    </center>
+    <hr/>
+}
+
+@if (Model.Count() == 0)
+{
+    <center>
+        <h4>There are no auctions to be shown :(</h4>
+        <hr />
+    </center>
+}
+else
+{
+
+    foreach (var item in Model)
+    {
+    <div class="col-md-3 auctionBlockWrapper">
+        <div class="auctionBlock" id="@item.Id">
+            @Html.ActionLink(item.Name.Length > 25 ? item.Name.Substring(0, 25) + "..." : item.Name, "Details", new { id = item.Id })
+            <br /><br />
+            <div id="imgContainer">
+                @if (item.Img != null)
+                {
+                    <img class="image" src="data:image;base64,@System.Convert.ToBase64String(item.Img)" />
+                }
+                else
+                {
+                    <img class="image" src="@Url.Content("~/Content/Images/no-auction.png")" alt="body" />
+                }
+            </div><br/>
+            <p class="time">
+                @if (item.Status == 1 || item.Status == 2)
+                {
+                    DateTime closeDate = item.CloseDate ?? DateTime.Now;
+                    TimeSpan timeSpan = item.Status == 1 ? new TimeSpan(0, 0, item.Length) : closeDate.Subtract(DateTime.Now);
+                    if (timeSpan.TotalSeconds < 0)
+                    {
+                        timeSpan = new TimeSpan(0, 0, 0, 0);
+                    }
+
+                    string remainingTime = (timeSpan.Days / 10 == 0 ? "0" : "")
+                            + timeSpan.Days + ":"
+                            + (timeSpan.Hours / 10 == 0 ? "0" : "")
+                            + timeSpan.Hours + ":"
+                            + (timeSpan.Minutes / 10 == 0 ? "0" : "")
+                            + timeSpan.Minutes + ":"
+                            + (timeSpan.Seconds / 10 == 0 ? "0" : "")
+                            + timeSpan.Seconds;
+
+                    <span>@remainingTime</span>
+
+                }
+                @if (item.Status == 3)
+                {
+                    <span>00:00:00:00</span>
+                }
+            </p>
+            <div class="priceSpan" style="font-weight: bold; font-size: 16px">@Html.DisplayFor(modelItem => item.CurrentPrice) @ViewBag.currency</div>
+            <div class="lastBidder">
+                @if (item.LastBidder == null)
+                {
+                    <span>No bidders yet</span>
+                }
+                else
+                {
+                    <span>@item.LastBidder</span>
+                }
+            </div>
+            @if (!User.IsInRole("Admin"))
+            {
+                string buttonId = "readyButton" + item.Id;
+                string display = item.Status == 1 ? "block" : "none";
+                    <div class="readyButton" id="@buttonId" style="display: @display">
+                        <button class="btn pendingButton" style="width: 100%; margin-top: 15px; color: white" disabled><b>Pending</b></button>
+                    </div>
+                buttonId = "openButton" + item.Id;
+                display = item.Status == 2 ? "block" : "none";
+                bool disabled = item.UserId == User.Identity.GetUserId() ? true : false;
+                    <div class="openButton" id="@buttonId" style="display: @display">
+                        <button class="btn bidButton bidButtonModal" style="width: 100%; margin-top: 15px; color: white" data-toggle="modal" data-target="#exampleModal" disabled="@disabled" minBids="@item.minBid" auctionId="@item.Id"><b>Bid!</b></button>
+                    </div>
+
+                buttonId = "closeButton" + item.Id;
+                display = item.Status == 3 ? "block" : "none";
+                    <div class="closeButton" id="@buttonId" style="display: @display">
+                        <button class="btn soldButton" style="width: 100%; margin-top: 15px; color: white;" disabled><b>Sold</b></button>
+                    </div>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+
+                string buttonId = "readyButton" + item.Id;
+                string display = item.Status == 1 ? "block" : "none";
+                    <div class="readyButton" id="@buttonId" style="display: @display">
+                        @using (Html.BeginForm("Approve", "Auctions", FormMethod.Post))
+                        {
+                        @Html.AntiForgeryToken()
+                        <button class="btn pendingButton" style="width: 100%; margin-top: 15px; color: white" id="approveButton"><b>Approve</b></button>
+                        @Html.Hidden("auctionId", item.Id);
+                        }
+                    </div>
+
+                buttonId = "openButton" + item.Id;
+                display = item.Status == 2 ? "block" : "none";
+                    <div class="openButton" id="@buttonId" style="display: @display">
+                        <button class="btn bidButton" style="width: 100%; margin-top: 15px; color: white" disabled><b>Opened</b></button>
+                    </div>
+
+                buttonId = "closeButton" + item.Id;
+                display = item.Status == 3 ? "block" : "none";
+                    <div class="closeButton" id="@buttonId" style="display: @display">
+                        <button class="btn soldButton" style="width: 100%; margin-top: 15px; color: white;" disabled><b>Closed</b></button>
+                    </div>
+
+            }
+        </div>
+    </div>
+    }
+
+    <div class="col-md-12">
+        <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, auctionName = ViewBag.currentAuctionName, minPrice = ViewBag.currentMinPrice, maxPrice = ViewBag.currentMaxPrice, auctionStatus = ViewBag.currentAuctionStatus }))
+        <hr />
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="border: none; border-radius: 0px">
+            <div class="modal-content" style="border: none; border-radius: 0px;">
+                <div class="modal-body">
+                    <label for="numberOfTokens">Number of Tokens:</label>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    @using (Html.BeginForm("Bid", "Bids", FormMethod.Post))
+                {
+                        @Html.AntiForgeryToken()
+                        <div style="margin-top: 15px">
+                            <div class="col-md-5" style="padding-left: 0px; padding-right: 0px">
+                                <input type="number" class="form-control searchInput" id="numberOfTokens" name="numberOfTokens" step="1" min="1" />
+                            </div>
+                            <div class="col-md-2" style="text-align: center">
+                                <table style="height: 34px; width: 100%;"><tr><td><b>=</b></td></tr></table>
+                            </div>
+                            <div class="col-md-5" style="padding-left: 0px; padding-right: 0px">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="" id="priceValue" name="priceValue" disabled />
+                                    <span class="input-group-addon" style="border-radius: 0px !important" id="currencySpan">
+                                        @ViewBag.currency
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-danger" id="numberOfTokensValMsg"></span>
+                        <button class="btn bidButton" style="width: 100%; color: white; font-size: 16px; margin-top: 15px"><b>Bid!</b></button>
+                        <input type="hidden" id="AuctionId" name="AuctionId" />
+                        @*@Html.Hidden("AuctionId", Model.Id);*@
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="tokenValue" name="tokenValue" value="@ViewBag.tokenValue" />
+
+    <script>
+        $(document).ready(function () {
+
+            $("#numberOfTokens").bind("change blur keyup mouseup", function () {
+                var numberOfTokens = $("#numberOfTokens").val();
+                if (!$.isNumeric(numberOfTokens)) {
+                    $("#numberOfTokensValMsg").text("No. of tokens must be a positive integer number greater than 0.");
+                } else {
+                    var number = parseInt(numberOfTokens);
+                    if (number <= 0) {
+                        $("#numberOfTokensValMsg").text("No. of tokens must be a positive integer number greater than 0.");
+                    } else {
+                        $("#priceValue").val(($("#numberOfTokens").val() * $("#tokenValue").val()).toFixed(2));
+                        $("#numberOfTokensValMsg").text("");
+                    }
+                }
+            });
+
+            $(".bidButtonModal").click(function () {
+                var minBids = $(this).attr('minBids');
+                $("#numberOfTokens").attr("min", minBids);
+                $("#AuctionId").val($(this).attr('auctionId'));
+                $("#numberOfTokens").val(minBids).trigger("change");
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,147 @@
+﻿@model UserTablesPrimer.Models.Auction
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<center>
+    <h2>Create Auction</h2>
+</center>
+
+
+@using (Html.BeginForm("Create", "Auctions", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                @Html.LabelFor(m => m.Name,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Name)))
+                <div>
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                @Html.LabelFor(m => m.Img,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Img)))
+                <div>
+                    <label for="uploadPhoto" id="uploadPhotoLabel">
+                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                    </label>
+                    @Html.TextBoxFor(model => model.ImageToUpload, new { type = "file", @id = "uploadPhoto" })
+                    <div id="imgPreview" class="thumbnail">
+                        <img class="img-responsive" id="targetImg" />
+                    </div>
+                    <div id="imgError" style="color: #AA4442; display: none">Only image files are allowed.</div>
+                    @Html.ValidationMessageFor(model => model.ImageToUpload, "", new { @class = "text-danger", @id = "imgValidator" })
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                @Html.LabelFor(m => m.Length,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Length)))
+                <div>
+                    @Html.EditorFor(model => model.Length, new { htmlAttributes = new { @class = "form-control", Value = ViewBag.length } })
+                    @Html.ValidationMessageFor(model => model.Length, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                @Html.LabelFor(m => m.StartPrice,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.StartPrice)))
+                <div>
+                    <div class="input-group">
+                        @Html.EditorFor(model => model.StartPrice, new { type="number", htmlAttributes = new { @class = "form-control" } })
+                        <span class="input-group-addon" style="border-radius: 0px !important">
+                            @ViewBag.currency
+                        </span>
+                    </div>
+
+                    @Html.ValidationMessageFor(model => model.StartPrice, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-4">
+                <input type="submit" value="Create" class="btn formButton" />
+            </div>
+        </div>
+    </div>
+
+}
+
+@*
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+*@
+
+<div class="col-md-12">&nbsp;<hr /></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#uploadPhoto").change(function () {
+            var File = this.files;
+
+            if (File && File[0]) {
+                ReadImage(File[0]);
+            }
+
+        });
+    });
+
+    var ReadImage = function (file) {
+        var reader = new FileReader();
+        var image = new Image();
+
+        reader.readAsDataURL(file);
+        reader.onload = function (_file) {
+            image.src = _file.target.result;
+
+            if (!(file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png" || file.type == "image/gif")) {
+                $("#imgPreview").hide();
+                $("#uploadPhoto").val('');
+                $("#imgError").show();
+            }
+
+            image.onload = function () {
+                var type = file.type;
+
+                if (type == "image/jpeg" || type == "image/jpg" || type == "image/png" || type == "image/gif") {
+                    $("#targetImg").attr('src', _file.target.result);
+                    $("#imgPreview").show();
+                    $("#imgError").hide();
+                }
+            }
+        }
+    }
+
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

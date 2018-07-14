@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Currencies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<center>
+<h2>Currencies</h2>
+    @if (ViewBag.error != null)
+    {
+        string error = ViewBag.error ? "red" : "green";
+        <span style="color: @error">
+            @if (ViewBag.error)
+            {
+                var errList = ViewBag.errors.Split(',');
+                foreach (var err in errList)
+                {
+                    <b>@err</b> <br />
+                }
+            }
+            else
+            {
+                <b>@ViewBag.msg</b>
+            }
+        </span>
+    }
+<hr/>
+</center>
+
+@using (Html.BeginForm("UpdateCurrencies", "Currencies", FormMethod.Post))
+{
+foreach (var item in Model)
+{
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-4" style="margin-bottom: 15px">
+            <div>
+                <div class="input-group">
+                    <input type="number" class="form-control" value="@item.Value" min="0.01" step="0.01" name="@item.Name" id="@item.Name"/>
+                    <span class="input-group-addon" style="border-radius: 0px !important">
+                        @item.Name
+                    </span>
+                </div>
+                @{ string validationId = item.Name + "ValMsg"; }
+                <span class="text-danger" id="@validationId"></span>
+            </div>
+        </div>
+    </div>
+                    }
+
+<div class="form-group">
+    <div class="col-md-offset-4 col-md-4">
+        <input type="submit" class="btn formButton" value="Update Currencies" />
+    </div>
+</div>
+                    }
+
+<div class="col-md-12">&nbsp;<hr /></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#RSD").bind("change blur keyup mouseup", function () {
+            var tokenValue = $("#RSD").val();
+            if (!$.isNumeric(tokenValue)) {
+                $("#RSDValMsg").text("Token value for RSD currency must be a positive number greater than 0.");
+            } else {
+                var number = parseFloat(tokenValue);
+                if (number <= 0) {
+                    $("#RSDValMsg").text("Token value for RSD currency must be a positive number greater than 0.");
+                } else {
+                    $("#RSDValMsg").text("");
+                }
+            }
+        });
+
+        $("#EUR").bind("change blur keyup mouseup", function () {
+            var tokenValue = $("#EUR").val();
+            if (!$.isNumeric(tokenValue)) {
+                $("#EURValMsg").text("Token value for EUR currency must be a positive number greater than 0.");
+            } else {
+                var number = parseFloat(tokenValue);
+                if (number <= 0) {
+                    $("#EURValMsg").text("Token value for EUR currency must be a positive number greater than 0.");
+                } else {
+                    $("#EURValMsg").text("");
+                }
+            }
+        });
+
+        $("#USD").bind("change blur keyup mouseup", function () {
+            var tokenValue = $("#USD").val();
+            if (!$.isNumeric(tokenValue)) {
+                $("#USDValMsg").text("Token value for USD currency must be a positive number greater than 0.");
+            } else {
+                var number = parseFloat(tokenValue);
+                if (number <= 0) {
+                    $("#USDValMsg").text("Token value for USD currency must be a positive number greater than 0.");
+                } else {
+                    $("#USDValMsg").text("");
+                }
+            }
+        });
+    });
+</script>
+

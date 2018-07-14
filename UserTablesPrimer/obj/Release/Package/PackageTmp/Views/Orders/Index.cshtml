@@ -1,0 +1,77 @@
+﻿@model PagedList.IPagedList<UserTablesPrimer.Models.Order>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "My Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<center>
+    <h2>My Orders</h2>
+
+<p>
+    @Html.ActionLink("Order Tokens", "Create")
+</p>
+</center>
+
+
+@if (Model.Count() == 0)
+{
+    <hr />
+    <center>
+        <h4>You haven't made any orders yet :(</h4>
+        <hr />
+    </center>
+}
+else
+{
+    <table class="table borderless" style="margin-top: 30px">
+        <thead>
+            <tr style="background-color: #e0e0e0">
+                <th scope="col" style="width: 25%">#</th>
+                <th scope="col" style="width: 25%">Tokens</th>
+                <th scope="col" style="width: 25%">Price</th>
+                @*<th scope="col" style="text-align: center">@Html.DisplayNameFor(m => m.CreatedOn)</th>*@
+                <th scope="col" style="width: 25%">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ var i = ViewBag.orderNo; }
+            @foreach (var item in Model)
+            {
+                var style = (item.Status == 2) ? "background-color: #e0ffe0" : ((item.Status == 1) ? "background-color: #fff5e5" : "background-color: #f7e8e8");
+                <tr style="@style">
+                    <th scope="row">@i</th>
+                    <td>@item.Tokens</td>
+                    <td>@item.Price @ViewBag.currency</td>
+                    @*<td>
+                        @item.CreatedOn
+                    </td>
+                    *@
+                    <td style="font-weight: bold">
+                        @if (@item.Status == 1)
+                        {
+                            <span>SUBMITTED</span>
+                        }
+                        @if (@item.Status == 2)
+                        {
+                            <span>COMPLETED</span>
+                        }
+                        @if (@item.Status == 3)
+                        {
+                            <span>CANCELED</span>
+                        }
+                    </td>
+                </tr>
+                i = i + 1;
+            }
+        </tbody>
+    </table>
+
+    <div class="col-md-12">
+        <span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        <hr />
+    </div>
+                }
+

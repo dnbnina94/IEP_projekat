@@ -1,0 +1,88 @@
+﻿@model UserTablesPrimer.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<center>
+    <h2>@ViewBag.Title.</h2>
+</center>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <hr />
+    <center>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </center>
+    <div class="form-group">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.Email,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Email)))
+            <div>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.Password,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Password)))
+            <div>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.ConfirmPassword,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.ConfirmPassword)))
+            <div>
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.Name,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Name)))
+            <div>
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.Surname,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Surname)))
+            <div>
+                @Html.TextBoxFor(m => m.Surname, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-4">
+            <input type="submit" class="btn formButton" value="Register" />
+        </div>
+    </div>
+}
+
+<div class="col-md-12">&nbsp;<hr /></div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

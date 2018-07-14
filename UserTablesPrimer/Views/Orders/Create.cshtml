@@ -1,0 +1,127 @@
+﻿@model UserTablesPrimer.Models.Order
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<center>
+<h2>Choose Package:</h2>
+</center>
+
+
+@*@using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="col-md-12">
+                <div class="col-md-2"></div>
+                <div class="col-md-8 packagesContainer">
+                    <div class="col-md-4 packageContainer">
+                        <div class="commonPackageContainer" id="silverContainer">
+                            <b>@ViewBag.silverTokens</b>
+                            Tokens
+                            <table class="coinsImgTable">
+                                <tr>
+                                    <td>
+                                        <img src="@Url.Content("~/Content/Images/silver.png")" class="coinsImg" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <b>@ViewBag.silverPrice</b> @ViewBag.currency
+                        </div>
+                    </div>
+                    <div class="col-md-4 packageContainer">
+                        <div class="commonPackageContainer" id="goldContainer">
+                            <b>@ViewBag.goldTokens</b>
+                            Tokens
+                            <table class="coinsImgTable">
+                                <tr>
+                                    <td>
+                                        <img src="@Url.Content("~/Content/Images/gold.png")" class="coinsImg" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <b>@ViewBag.goldPrice</b> @ViewBag.currency
+                        </div>
+                    </div>
+                    <div class="col-md-4 packageContainer">
+                        <div class="commonPackageContainer" id="platinumContainer">
+                            <b>@ViewBag.platinumTokens</b>
+                            Tokens
+                            <table class="coinsImgTable">
+                                <tr>
+                                    <td>
+                                        <img src="@Url.Content("~/Content/Images/platinum.png")" class="coinsImg" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <b>@ViewBag.platinumPrice</b> @ViewBag.currency
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
+            <div class="col-md-12" style="display: none">
+                <input type="radio" name="packageRadio" id="silverRadio" value="1" checked/>
+                <input type="radio" name="packageRadio" id="goldRadio" value="2" />
+                <input type="radio" name="packageRadio" id="platinumRadio" value="3" />
+            </div>
+
+            <div class="col-md-12">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="col-md-offset-2 col-md-8" style="padding-left: 25px; padding-right: 25px">
+                        <input type="submit" value="Order Tokens" class="btn formButton loginButton" />
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    }
+*@
+
+<div class="col-md-12">
+    <center>
+        @Html.Raw(ViewBag.widget)
+    </center>
+</div>
+
+<div class="col-md-12"><hr /></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    $("#silverContainer").click(function () {
+        $("#silverRadio").prop("checked", true);
+        $("#silverContainer").css("border", "3px solid #6A8096");
+        $("#goldContainer").css("border", "none");
+        $("#platinumContainer").css("border", "none");
+    });
+
+    $("#goldContainer").click(function () {
+        $("#goldRadio").prop("checked", true);
+        $("#silverContainer").css("border", "none");
+        $("#goldContainer").css("border", "3px solid #6A8096");
+        $("#platinumContainer").css("border", "none");
+    });
+
+    $("#platinumContainer").click(function () {
+        $("#platinumRadio").prop("checked", true);
+        $("#silverContainer").css("border", "none");
+        $("#goldContainer").css("border", "none");
+        $("#platinumContainer").css("border", "3px solid #6A8096");
+    });
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+@Scripts.Render("~/Scripts/jquery.signalR-2.3.0.min.js")
+@Scripts.Render("~/signalr/hubs")
+@Scripts.Render("~/Scripts/signalRMessage.js")

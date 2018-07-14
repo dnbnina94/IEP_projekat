@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<center>
+<h2>Parameters</h2>
+    @if (ViewBag.error != null)
+    {
+        string error = ViewBag.error ? "red" : "green";
+        <span style="color: @error">
+            @if (ViewBag.error)
+            {
+                var errList = ViewBag.errors.Split(',');
+                foreach(var err in errList)
+                {
+                    <b>@err</b> <br/>
+                }
+            } else
+            {
+                <b>@ViewBag.msg</b>
+            }
+        </span>
+    }
+    <hr/>
+</center>
+
+@using (Html.BeginForm("ChangeParameters", "Parameters", FormMethod.Post))
+{
+foreach (var item in Model)
+{
+    if (item.Name == "C")
+    {
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-4" style="padding-bottom: 15px !important">
+                <label for="defaultCurrency">Currency:</label>
+                <select class="form-control" id="defaultCurrency" name="defaultCurrency">
+                    @{ string defaultVal = item.Value; }
+                    @foreach (var curr in ViewBag.currencies)
+                    {
+                        if (defaultVal == curr.Name)
+                        {
+                            <option value="@curr.Name" selected>@curr.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@curr.Name">@curr.Name</option>
+                        }
+
+                    }
+                </select>
+            </div> 
+        </div>
+                        }
+                        if (item.Name == "D")
+                        {
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-4" style="padding-bottom: 15px !important">
+                <label for="defaultAuctionLength">Auction length (seconds):</label>
+                <input type="number" class="form-control" id="defaultAuctionLength" name="defaultAuctionLength" value="@item.Value" min="1">
+                <span class="text-danger" id="defaultAuctionLengthValMsg"></span>
+            </div>
+        </div>
+                        }
+                        if (item.Name == "S")
+                        {
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-4" style="padding-bottom: 15px !important">
+                <label for="silverPackageTokens">No. of tokens for 'Silver' package:</label>
+                <input type="number" class="form-control" id="silverPackageTokens" name="silverPackageTokens" value="@item.Value" min="1">
+                <span class="text-danger" id="silverPackageTokensValMsg"></span>
+            </div>
+        </div>
+                        }
+                        if (item.Name == "G")
+                        {
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-4" style="padding-bottom: 15px !important">
+                <label for="goldPackageTokens">No. of tokens for 'Gold' package:</label>
+                <input type="number" class="form-control" id="goldPackageTokens" name="goldPackageTokens" value="@item.Value" min="1">
+                <span class="text-danger" id="goldPackageTokensValMsg"></span>
+            </div>
+        </div>
+                        }
+                        if (item.Name == "P")
+                        {
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-4" style="padding-bottom: 15px !important">
+                <label for="platinumPackageTokens">No. of tokens for 'Platinum' package:</label>
+                <input type="number" class="form-control" id="platinumPackageTokens" name="platinumPackageTokens" value="@item.Value" min="1">
+                <span class="text-danger" id="platinumPackageTokensValMsg"></span>
+            </div>
+        </div>
+                        }
+                        if (item.Name == "N")
+                        {
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-4" style="padding-bottom: 15px !important">
+                <label for="defaultNumOfAuctions">Default No. of Auctions:</label>
+                <input type="number" class="form-control" id="defaultNumOfAuctions" name="defaultNumOfAuctions" value="@item.Value" min="1" />
+                <span class="text-danger" id="defaultNumOfAuctionsValMsg"></span>
+            </div>
+        </div>
+                            }
+                        }
+
+<div class="form-group">
+    <div class="col-md-offset-4 col-md-4">
+        <input type="submit" class="btn formButton" value="Update Parameters" />
+    </div>
+</div>
+                        }
+
+<div class="col-md-12">&nbsp;<hr /></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#defaultAuctionLength").bind("change blur keyup mouseup", function () {
+            var auctionLength = $("#defaultAuctionLength").val();
+            if (!$.isNumeric(auctionLength)) {
+                $("#defaultAuctionLengthValMsg").text("Auction length must be a positive integer number greater than 0.");
+            } else {
+                var number = parseInt(auctionLength);
+                if (number <= 0) {
+                    $("#defaultAuctionLengthValMsg").text("Auction length must be a positive integer number greater than 0.");
+                } else {
+                    $("#defaultAuctionLengthValMsg").text("");
+                }
+            }
+        });
+
+        $("#silverPackageTokens").bind("change blur keyup mouseup", function () {
+            var silverTokens = $("#silverPackageTokens").val();
+            if (!$.isNumeric(silverTokens)) {
+                $("#silverPackageTokensValMsg").text("No. of tokens for 'Silver' package must be a positive integer number greater than 0.");
+            } else {
+                var number = parseInt(silverTokens);
+                if (number <= 0) {
+                    $("#silverPackageTokensValMsg").text("No. of tokens for 'Silver' package must be a positive integer number greater than 0.");
+                } else {
+                    $("#silverPackageTokensValMsg").text("");
+                }
+            }
+        });
+
+        $("#goldPackageTokens").bind("change blur keyup mouseup", function () {
+            var goldTokens = $("#goldPackageTokens").val();
+            if (!$.isNumeric(goldTokens)) {
+                $("#goldPackageTokensValMsg").text("No. of tokens for 'Gold' package must be a positive integer number greater than 0.");
+            } else {
+                var number = parseInt(goldTokens);
+                if (number <= 0) {
+                    $("#goldPackageTokensValMsg").text("No. of tokens for 'Gold' package must be a positive integer number greater than 0.");
+                } else {
+                    $("#goldPackageTokensValMsg").text("");
+                }
+            }
+        });
+
+        $("#platinumPackageTokens").bind("change blur keyup mouseup", function () {
+            var platinumTokens = $("#platinumPackageTokens").val();
+            if (!$.isNumeric(platinumTokens)) {
+                $("#platinumPackageTokensValMsg").text("No. of tokens for 'Platinum' package must be a positive integer number greater than 0.");
+            } else {
+                var number = parseInt(platinumTokens);
+                if (number <= 0) {
+                    $("#platinumPackageTokensValMsg").text("No. of tokens for 'Platinum' package must be a positive integer number greater than 0.");
+                } else {
+                    $("#platinumPackageTokensValMsg").text("");
+                }
+            }
+        });
+
+        $("#defaultNumOfAuctions").bind("change blur keyup mouseup", function () {
+            var numOfAuctions = $("#defaultNumOfAuctions").val();
+            if (!$.isNumeric(numOfAuctions)) {
+                $("#defaultNumOfAuctionsValMsg").text("Default No. of Auctions must be a positive integer number greater than 0.");
+            } else {
+                var number = parseInt(numOfAuctions);
+                if (number <= 0) {
+                    $("#defaultNumOfAuctionsValMsg").text("Default No. of Auctions must be a positive integer number greater than 0.");
+                } else {
+                    $("#defaultNumOfAuctionsValMsg").text("");
+                }
+            }
+        });
+    });
+</script>
+

@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNet.Identity
+@using UserTablesPrimer.Models
+@model UserPartialViewModel
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        @if (User.IsInRole("User"))
+        {
+        <li>
+            <a href="~/Notifications/">
+                Notifications
+                <span style="color: red; font-weight: bold" id="notification">
+                    @Model.HasNot
+                </span>
+            </a>
+        </li>
+        <li>
+            @Html.ActionLink("My Auctions", "MyAuctions", "Auctions", new { id = User.Identity.GetUserId() }, null)
+        </li>
+        <li>
+            <a href="~/Orders/">
+                <img src="@Url.Content("~/Content/Images/coin.png")" alt="body" style="height: 16px; margin-bottom: 2px;" />
+                <span id="numOfTokens">@Model.Tokens</span>
+            </a>
+        </li>
+        }
+        @if (User.IsInRole("Admin"))
+        {
+            <li>
+                @Html.ActionLink("Parameters", "Index", "Parameters")
+            </li>
+            <li>
+                @Html.ActionLink("Currencies", "Index", "Currencies")
+            </li>
+        }
+        <li>
+            @Html.ActionLink("Hello " + User.GetName() + " " + User.GetSurname() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

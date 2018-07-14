@@ -1,0 +1,37 @@
+﻿@model UserTablesPrimer.Models.ChangeEmailViewModel
+@using UserTablesPrimer.Models
+@{
+    ViewBag.Title = "Change Email";
+}
+
+<center>
+    <h2>@ViewBag.Title.</h2>
+</center>
+
+@using (Html.BeginForm("ChangeEmail", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <hr />
+    <center>
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+    </center>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-4">
+            @Html.LabelFor(m => m.Email,
+               string.Format("{0}:", Html.DisplayNameFor(m => m.Email)))
+            <div>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @Value = User.Identity.Name })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-4">
+            <input type="submit" value="Change your email" class="btn formButton" />
+        </div>
+    </div>
+
+    <div class="col-md-12"><hr/></div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
